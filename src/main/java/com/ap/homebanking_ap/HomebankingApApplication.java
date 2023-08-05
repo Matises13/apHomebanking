@@ -19,6 +19,8 @@ public class HomebankingApApplication {
 		return (args -> {
 			Client client1 = new Client();
 			client1.setFirstName("Melba");
+			client1.setLastName("Morel");
+			client1.setEmail("melba@mindhub.com");
 
 
 			clientRepository.save(client1);

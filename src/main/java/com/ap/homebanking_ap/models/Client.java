@@ -14,13 +14,13 @@ public class Client {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     private String firstName;
-    private String secondName;
+    private String lastName;
     private String email;
 
     public Client(){}
-    public Client(String firstName, String secondName, String email) {
+    public Client(String firstName, String lastName, String email) {
         this.firstName = firstName;
-        this.secondName = secondName;
+        this.lastName = lastName;
         this.email = email;
     }
     public String getFirstName() {
@@ -30,12 +30,12 @@ public class Client {
         this.firstName = firstName;
     }
 
-    public String getSecondName() {
-        return secondName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
