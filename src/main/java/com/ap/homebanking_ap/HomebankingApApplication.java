@@ -1,11 +1,9 @@
 package com.ap.homebanking_ap;
 
-import com.ap.homebanking_ap.models.Account;
-import com.ap.homebanking_ap.models.Client;
-import com.ap.homebanking_ap.models.Transaction;
-import com.ap.homebanking_ap.models.TransactionType;
+import com.ap.homebanking_ap.models.*;
 import com.ap.homebanking_ap.repositories.AccountRepository;
 import com.ap.homebanking_ap.repositories.ClientRepository;
+import com.ap.homebanking_ap.repositories.LoanRepository;
 import com.ap.homebanking_ap.repositories.TransactionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootApplication
 public class HomebankingApApplication {
@@ -23,7 +22,8 @@ public class HomebankingApApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository){
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository,
+									  TransactionRepository transactionRepository, LoanRepository loanRepository){
 		return (args -> {
 			Client client1 = new Client();
 			client1.setFirstName("Melba");
@@ -33,6 +33,7 @@ public class HomebankingApApplication {
 			Client client2 = new Client("Enzo","Fernandez","efernandez@gmail.com");
 
 			clientRepository.save(client1);
+
 			clientRepository.save(client2);
 
 			Account account1 = new Account("VIN001",LocalDate.now(),5000.0);
@@ -59,6 +60,13 @@ public class HomebankingApApplication {
 			accountRepository.save(account1);
 			accountRepository.save(account2);
 
+			Loan loan1 = new Loan("Hipotecario",500000.0, List.of(12,24,36,48,60));
+			Loan loan2 = new Loan("Personal",100000.0,List.of(6,12,24));
+			Loan loan3 = new Loan("Automotriz",300000.0,List.of(6,12,24,36));
+
+			loanRepository.save(loan1);
+			loanRepository.save(loan2);
+			loanRepository.save(loan3);
 
 
 		});
