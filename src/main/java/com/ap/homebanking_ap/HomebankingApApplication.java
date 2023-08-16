@@ -1,10 +1,7 @@
 package com.ap.homebanking_ap;
 
 import com.ap.homebanking_ap.models.*;
-import com.ap.homebanking_ap.repositories.AccountRepository;
-import com.ap.homebanking_ap.repositories.ClientRepository;
-import com.ap.homebanking_ap.repositories.LoanRepository;
-import com.ap.homebanking_ap.repositories.TransactionRepository;
+import com.ap.homebanking_ap.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,7 +20,7 @@ public class HomebankingApApplication {
 
 	@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository,
-									  TransactionRepository transactionRepository, LoanRepository loanRepository){
+									  TransactionRepository transactionRepository, LoanRepository loanRepository,ClientLoanRepository clientLoanRepository){
 		return (args -> {
 			Client client1 = new Client();
 			client1.setFirstName("Melba");
@@ -68,6 +65,27 @@ public class HomebankingApApplication {
 			loanRepository.save(loan2);
 			loanRepository.save(loan3);
 
+			ClientLoan clientLoan1 = new ClientLoan(400000.0,60);
+			ClientLoan clientLoan2 = new ClientLoan(50000.0,12);
+			ClientLoan clientLoan3 = new ClientLoan(100000.0,24);
+			ClientLoan clientLoan4 = new ClientLoan(200000.0,36);
+
+
+
+			client1.addClientLoan(clientLoan1);
+			client1.addClientLoan(clientLoan2);
+			client2.addClientLoan(clientLoan3);
+			client2.addClientLoan(clientLoan4);
+
+			loan1.addClientLoan(clientLoan1);
+			loan2.addClientLoan(clientLoan2);
+			loan2.addClientLoan(clientLoan3);
+			loan3.addClientLoan(clientLoan4);
+
+			clientLoanRepository.save(clientLoan1);
+			clientLoanRepository.save(clientLoan2);
+			clientLoanRepository.save(clientLoan3);
+			clientLoanRepository.save(clientLoan4);
 
 		});
 	}

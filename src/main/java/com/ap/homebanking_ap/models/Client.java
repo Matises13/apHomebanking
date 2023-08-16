@@ -4,7 +4,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Client {
@@ -66,8 +68,9 @@ public class Client {
         clientLoan.setClient(this);
         loans.add(clientLoan);
     }
-
-
+    public List<Loan> getLoans(){
+        return loans.stream().map(clientLoan -> clientLoan.getLoan()).collect(Collectors.toList());
+    }
 
 
 }
