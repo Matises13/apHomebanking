@@ -24,6 +24,8 @@ public class AccountController {
 
     @RequestMapping("/accounts/{id}")
     private AccountDTO getId(@PathVariable Long id){
-        return new AccountDTO(accountRepository.findById(id).orElse(null));
+        return accountRepository.findById(id).map(account -> new AccountDTO(account)).orElse(null);
+
+                // new AccountDTO(accountRepository.findById(id).orElse(null));
     }
 }
