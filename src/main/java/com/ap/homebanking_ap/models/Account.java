@@ -63,7 +63,6 @@ public class Account {
         this.balance = balance;
     }
 
-
     public Client getOwner() {
         return owner;
     }
@@ -80,5 +79,4 @@ public class Account {
     public Set<Transaction> getTransactions() {
         return transactions;
     }
-
 }
