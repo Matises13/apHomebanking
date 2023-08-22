@@ -2,10 +2,12 @@ package com.ap.homebanking_ap;
 
 import com.ap.homebanking_ap.models.*;
 import com.ap.homebanking_ap.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @SpringBootApplication
 public class HomebankingApApplication {
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HomebankingApApplication.class, args);
@@ -27,8 +31,9 @@ public class HomebankingApApplication {
 			client1.setFirstName("Melba");
 			client1.setLastName("Morel");
 			client1.setEmail("melba@mindhub.com");
+			client1.setPassword(passwordEncoder.encode("Melba1234"));
 
-			Client client2 = new Client("Enzo","Fernandez","efernandez@gmail.com");
+			Client client2 = new Client("Enzo","Fernandez","efernandez@gmail.com", passwordEncoder.encode("Fernandez"));
 
 			clientRepository.save(client1);
 
