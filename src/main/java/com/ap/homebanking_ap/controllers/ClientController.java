@@ -22,8 +22,6 @@ public class ClientController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-
     @RequestMapping("/clients")
     private List<ClientDTO> getClients(){
         return clientRepository.findAll().stream().map(client -> new ClientDTO(client)).collect(Collectors.toList());
