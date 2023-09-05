@@ -40,10 +40,10 @@ public class HomebankingApApplication {
 			clientRepository.save(client2);
 
 			Account account1 = new Account("VIN001",LocalDate.now(),5000.0);
-			LocalDate today = LocalDate.now();
 
-			Account account2 = new Account("VIN002",LocalDate.now(),7500.0);
-			account2.setDate(today.plusDays(1));
+
+			Account account2 = new Account("VIN002",LocalDate.now().plusDays(1),7500.0);
+
 
 			Transaction transaction1 = new Transaction(TransactionType.CREDIT,500.0,"Credit rent", LocalDateTime.now());
 			Transaction transaction2 = new Transaction(TransactionType.DEBIT,-200.0,"Debit MacDonall's",LocalDateTime.now());
