@@ -1,8 +1,12 @@
 package com.ap.homebanking_ap.controllers;
 
 import com.ap.homebanking_ap.dtos.ClientDTO;
+import com.ap.homebanking_ap.models.Account;
 import com.ap.homebanking_ap.models.Client;
+import com.ap.homebanking_ap.repositories.AccountRepository;
 import com.ap.homebanking_ap.repositories.ClientRepository;
+import com.ap.homebanking_ap.utils.AccountUtils;
+import com.ap.homebanking_ap.utils.CardUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
@@ -11,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +26,8 @@ public class ClientController {
     private ClientRepository clientRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @RequestMapping("/clients")
     private List<ClientDTO> getClients(){
@@ -46,9 +53,23 @@ public class ClientController {
         if (clientRepository.findByEmail(email) != null){
             return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
         }
+        Account account = null;
+        do {
+            String number = "VIN" + AccountUtils.getRandomNumberAccount(100000000,1000000);
+            account = new Account(number,LocalDate.now(),0.0);
+        }
+        while (accountRepository.existsByNumber(account.getNumber()));
 
-        clientRepository.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
+        String numberCard = CardUtils.getRandomNumberCard();
+
+        Integer cvv = CardUtils.getRandomNumberCvv(0,999);
+
+        Client clientRegistered = new Client(firstName, lastName, email, passwordEncoder.encode(password));
+        clientRegistered.addAccount(account);
+
         return new ResponseEntity<>(HttpStatus.CREATED);
-
     }
 }
+
+
+
