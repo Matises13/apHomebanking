@@ -17,7 +17,7 @@ public class Card {
     private LocalDate fromDate;
     private LocalDate thruDate;
     private String cardHolder;
-    private ColorType color;
+    private CardColor color;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
@@ -26,8 +26,8 @@ public class Card {
     public Card(){
 
     }
-    public Card(CardType type, String number,Integer cvv,
-                LocalDate fromDate,LocalDate thruDate,String cardHolder,ColorType color){
+    public Card(CardType type, String number, Integer cvv,
+                LocalDate fromDate, LocalDate thruDate, String cardHolder, CardColor color){
         this.type = type;
         this.number = number;
         this.cvv = cvv;
@@ -89,11 +89,11 @@ public class Card {
         this.cardHolder = cardHolder;
     }
 
-    public ColorType getColor() {
+    public CardColor getColor() {
         return color;
     }
 
-    public void setColor(ColorType color) {
+    public void setColor(CardColor color) {
         this.color = color;
     }
 

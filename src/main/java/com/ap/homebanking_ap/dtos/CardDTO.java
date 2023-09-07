@@ -2,10 +2,9 @@ package com.ap.homebanking_ap.dtos;
 
 import com.ap.homebanking_ap.models.Card;
 import com.ap.homebanking_ap.models.CardType;
-import com.ap.homebanking_ap.models.ColorType;
+import com.ap.homebanking_ap.models.CardColor;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 public class CardDTO {
     private Long id;
@@ -15,7 +14,7 @@ public class CardDTO {
     private LocalDate fromDate;
     private LocalDate thruDate;
     private String cardHolder;
-    private ColorType color;
+    private CardColor color;
 
     public CardDTO(Card card){
         this.id = card.getId();
@@ -56,7 +55,7 @@ public class CardDTO {
         return cardHolder;
     }
 
-    public ColorType getColor() {
+    public CardColor getColor() {
         return color;
     }
 }

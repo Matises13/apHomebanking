@@ -1,6 +1,6 @@
 package com.ap.homebanking_ap.utils;
 
-public class CardUtils {
+public final class CardUtils {
     public static int getRandomNumberCvv (int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }

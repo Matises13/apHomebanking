@@ -95,11 +95,11 @@ public class HomebankingApApplication {
 
 			Card card1 = new Card(CardType.DEBIT,"4546 5678 4532 4567",
 					230,LocalDate.now(),LocalDate.now().plusYears(5),
-					"MELBA MOREL",ColorType.GOLD);
+					"MELBA MOREL", CardColor.GOLD);
 			Card card2 = new Card(CardType.CREDIT,"4546 4566 5677 3435",456,LocalDate.now(),LocalDate.now().plusYears(5),
-					"MELBA MOREL",ColorType.TITANIUM);
+					"MELBA MOREL", CardColor.TITANIUM);
 			Card card3 = new Card(CardType.CREDIT,"4546 6754 5677 3456",123,LocalDate.now(),LocalDate.now().plusYears(5),
-					"ENZO FERNANDEZ",ColorType.SILVER);
+					"ENZO FERNANDEZ", CardColor.SILVER);
 
 			client1.addCard(card1);
 			client1.addCard(card2);

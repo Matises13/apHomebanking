@@ -4,18 +4,14 @@ import com.ap.homebanking_ap.dtos.CardDTO;
 import com.ap.homebanking_ap.models.Card;
 import com.ap.homebanking_ap.models.CardType;
 import com.ap.homebanking_ap.models.Client;
-import com.ap.homebanking_ap.models.ColorType;
+import com.ap.homebanking_ap.models.CardColor;
 import com.ap.homebanking_ap.repositories.CardRepository;
 import com.ap.homebanking_ap.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,8 +37,8 @@ public class CardController {
     public CardDTO getCard(@PathVariable Long id) {
         return new CardDTO(cardRepository.findById(id).orElse(null));
     }
-
-    public ResponseEntity<Object> createdCard(@RequestParam CardType cardType, @RequestParam ColorType colorType, Authentication authentication) {
+    @PostMapping("/clients/current/cards")
+    public ResponseEntity<Object> createdCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor, Authentication authentication) {
 
         Client clientAuth = clientRepository.findByEmail(authentication.getName());
 
@@ -63,7 +59,7 @@ public class CardController {
         while (cardRepository.existsByNumber(numberCard));
 
         Card newCard = new Card(cardType,numberCard,cvv,LocalDate.now(),LocalDate.now().plusYears(5),clientAuth.getFirstName() + " " + clientAuth.getLastName(),
-                 colorType);
+                cardColor);
         clientAuth.addCard(newCard);
         cardRepository.save(newCard);
         return new ResponseEntity<>(HttpStatus.CREATED);
