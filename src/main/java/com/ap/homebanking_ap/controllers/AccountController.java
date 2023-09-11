@@ -31,12 +31,18 @@ public class AccountController {
 
     @RequestMapping("/accounts")
     public Set<AccountDTO>getAccounts(){
-        return accountRepository.findAll().stream().map(account -> new AccountDTO(account)).collect(Collectors.toSet());
+        return accountRepository.findAll().stream().map(AccountDTO::new).collect(Collectors.toSet());
     }
 
     @RequestMapping("/accounts/{id}")
     private AccountDTO getId(@PathVariable Long id){
-        return accountRepository.findById(id).map(account -> new AccountDTO(account)).orElse(null);
+        return accountRepository.findById(id).map(AccountDTO::new).orElse(null);
+    }
+    @RequestMapping("/clients/current/accounts")
+    public Set<AccountDTO> getCurrentClientAccount (Authentication authentication){
+        Client clientAuth = clientRepository.findByEmail(authentication.getName());
+
+        return clientAuth.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toSet());
     }
 
     @RequestMapping(value = "/clients/current/accounts", method = RequestMethod.POST)

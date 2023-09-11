@@ -20,12 +20,19 @@ public class WebAuthorization {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeRequests()
-                .antMatchers("/web/index.html","/web/css/**","/web/img/**","/web/js/**").permitAll()
+            /*    .antMatchers("/web/index.html","/web/css/**","/web/img/**","/web/js/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/login","/api/logout","/api/clients").permitAll()
                 .antMatchers("/admin/**","/rest/**","/h2-console").hasAuthority("ADMIN")
-                .antMatchers("/api/clients/current","/api/clients/current/accounts","/web/**","/api/clients/**").hasAuthority("CLIENT")
-                .antMatchers(HttpMethod.POST,"/api/clients/current/cards").hasAuthority("CLIENT")
-                .anyRequest().denyAll();
+                .antMatchers("/api/clients/current","/api/clients/current/accounts","/api/accounts","/web/**","/api/clients/**").hasAuthority("CLIENT")
+                .antMatchers(HttpMethod.POST,"/api/clients/current/cards","/api/transactions").hasAuthority("CLIENT")
+                .anyRequest().denyAll(); */
+
+        .antMatchers("/web/index.html", "/web/js/","/web/css/","/web/img/").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/login","/api/logout","/api/clients").permitAll()
+                .antMatchers("/h2-console/","/rest/", "/api/clients").hasAuthority("ADMIN")
+                .antMatchers("/api/","/api/clients/{id}","/loans").hasAuthority("CLIENT")
+                .antMatchers("/api/clients/current", "/web/","/api/clients/","/clients/current/accounts").hasAuthority("CLIENT")
+                .antMatchers(HttpMethod.POST, "/clients/current/accounts/","/clients/current/cards","/transactions","/loans").hasAuthority("CLIENT");
 
         http.formLogin()
                 .usernameParameter("email")

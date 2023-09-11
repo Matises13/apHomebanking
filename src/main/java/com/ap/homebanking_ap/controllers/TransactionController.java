@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,18 +30,19 @@ public class TransactionController {
     private ClientRepository clientRepository;
     @Autowired
     private AccountRepository accountRepository;
-    @RequestMapping("/transactions")
-    private List<TransactionDTO> getTransactions(){
-        return transactionRepository.findAll().stream().map(transaction -> new TransactionDTO(transaction)).collect(Collectors.toList());
+    @RequestMapping("/transaction")
+    private Set<TransactionDTO> getTransactions(){
+        return transactionRepository.findAll().stream().map(transaction -> new TransactionDTO(transaction)).collect(Collectors.toSet());
     }
-    @RequestMapping("/transactions/{id}")
+    @RequestMapping("/transaction/{id}")
     private TransactionDTO getId(@PathVariable Long id) {
         return new TransactionDTO(transactionRepository.findById(id).orElse(null));
     }
     @Transactional
     @RequestMapping (value = "/transactions",method = RequestMethod.POST)
     public ResponseEntity<Object> createdTransaction (
-            @RequestParam Double amount, @RequestParam String description, @RequestParam String  fromAccountNumber, @RequestParam String toAccountNumber, Authentication authentication
+            @RequestParam Double amount, @RequestParam String description,
+            @RequestParam String  fromAccountNumber, @RequestParam String toAccountNumber, Authentication authentication
     ) {
         Client clientAuth = clientRepository.findByEmail(authentication.getName());
         Account accountSource = accountRepository.findByNumber(fromAccountNumber);

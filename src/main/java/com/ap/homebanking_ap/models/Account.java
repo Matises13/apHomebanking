@@ -27,7 +27,6 @@ public class Account {
     private Set<Transaction> transactions = new HashSet<>();
 
 
-
     public Account() {}
     public Account(String number,LocalDate creationDate,Double balance) {
         this.number = number;
