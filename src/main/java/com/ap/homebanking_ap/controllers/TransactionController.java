@@ -25,18 +25,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class TransactionController {
     @Autowired
-    private TransactionRepository transactionRepository;
+    private TransactionService transactionService;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
     @RequestMapping("/transaction")
     private Set<TransactionDTO> getTransactions(){
-        return transactionRepository.findAll().stream().map(transaction -> new TransactionDTO(transaction)).collect(Collectors.toSet());
+        return transactionService.getTransactions();
     }
     @RequestMapping("/transaction/{id}")
-    private TransactionDTO getId(@PathVariable Long id) {
-        return new TransactionDTO(transactionRepository.findById(id).orElse(null));
+    private TransactionDTO getTransactions(@PathVariable Long id) {
+        return new TransactionDTO(transactionService.getTransactionById(id));
     }
     @Transactional
     @RequestMapping (value = "/transactions",method = RequestMethod.POST)
@@ -44,9 +44,9 @@ public class TransactionController {
             @RequestParam Double amount, @RequestParam String description,
             @RequestParam String  fromAccountNumber, @RequestParam String toAccountNumber, Authentication authentication
     ) {
-        Client clientAuth = clientRepository.findByEmail(authentication.getName());
-        Account accountSource = accountRepository.findByNumber(fromAccountNumber);
-        Account accountDestination = accountRepository.findByNumber(toAccountNumber);
+        Client clientAuth = clientService.getCurrentClient(authentication.getName());
+        Account accountSource = accountService.findByNumber(fromAccountNumber);
+        Account accountDestination = accountService.findByNumber(toAccountNumber);
 
         if (amount == null) {
             return new ResponseEntity<>("Missing Data, amount is required", HttpStatus.FORBIDDEN);
@@ -72,7 +72,7 @@ public class TransactionController {
 
         // Verificación de existencia de cuenta origen.
 
-        if (!accountRepository.existsByNumber(fromAccountNumber)) {
+        if (!accountService.existsByNumber(fromAccountNumber)) {
             return new ResponseEntity<>("Source account don't exists", HttpStatus.FORBIDDEN);
         }
 
@@ -84,7 +84,7 @@ public class TransactionController {
 
         // Verificacion de existencia de la cuenta destino
 
-        if (!accountRepository.existsByNumber(toAccountNumber)) {
+        if (!accountService.existsByNumber(toAccountNumber)) {
             return new ResponseEntity<>("Account destination don't exists", HttpStatus.FORBIDDEN);
         }
 
@@ -101,15 +101,15 @@ public class TransactionController {
                 LocalDateTime.now());
         accountSource.addTransaction(transactionDebit);
         accountSource.setBalance(accountSource.getBalance() - amount);
-        transactionRepository.save(transactionDebit);
-        accountRepository.save(accountSource);
+        transactionService.createdTransaction(transactionDebit);
+        accountService.createdAccount(accountSource);
 
         // Credit Transaction
         Transaction transactionCredit = new Transaction(TransactionType.CREDIT,amount,description + "CREDIT" + toAccountNumber, LocalDateTime.now());
         accountDestination.setBalance(accountDestination.getBalance() + amount);
         accountDestination.addTransaction(transactionCredit);
-        transactionRepository.save(transactionCredit);
-        accountRepository.save(accountDestination);
+        transactionService.createdTransaction(transactionCredit);
+        accountService.createdAccount(accountDestination);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
 

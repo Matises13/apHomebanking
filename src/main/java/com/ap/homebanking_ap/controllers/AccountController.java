@@ -25,44 +25,43 @@ import static com.ap.homebanking_ap.utils.AccountUtils.getRandomNumberAccount;
 @RequestMapping("/api")
 public class AccountController {
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @RequestMapping("/accounts")
     public Set<AccountDTO>getAccounts(){
-        return accountRepository.findAll().stream().map(AccountDTO::new).collect(Collectors.toSet());
+        return accountService.getAccounts();
     }
 
     @RequestMapping("/accounts/{id}")
-    private AccountDTO getId(@PathVariable Long id){
-        return accountRepository.findById(id).map(AccountDTO::new).orElse(null);
+    private AccountDTO getAccount(@PathVariable Long id){
+        return new AccountDTO(accountService.getAccountById(id));
     }
     @RequestMapping("/clients/current/accounts")
-    public Set<AccountDTO> getCurrentClientAccount (Authentication authentication){
-        Client clientAuth = clientRepository.findByEmail(authentication.getName());
-
-        return clientAuth.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toSet());
+    public Set<AccountDTO> getCurrentAccount (Authentication authentication){
+        return accountService.getCurrentAccount(authentication);
     }
 
     @RequestMapping(value = "/clients/current/accounts", method = RequestMethod.POST)
 
     public ResponseEntity<Object> createdAccount (Authentication authentication){
-        Client clientAuth = clientRepository.findByEmail(authentication.getName());
-        if (clientAuth.getAccounts().stream().count()==3){
+        //Client clientAuth = clientRepository.findByEmail(authentication.getName());
+        if (clientService.getCurrentClient(authentication.getName().getAccounts().stream().count() == 3){
             System.out.println("Tiene 3 cuentas, alcanzo el maximo");
             return new ResponseEntity<>("Already max number accounts", HttpStatus.FORBIDDEN);
         }
 
+        Client clientAuth = clientService.getCurrentClient(authentication.getName());
         Account account = null;
         do{
             String number = "VIN" + getRandomNumberAccount(10000000,99999999);
             account = new Account(number, LocalDate.now(), 0.0);
         }
-        while(accountRepository.existsByNumber(account.getNumber()));
+        while(accountService.existsByNumber(account.getNumber()));
 
         clientAuth.addAccount(account);
-        accountRepository.save(account);
+        accountService.createdAccount(account);
         System.out.println("Creaste una cuenta");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

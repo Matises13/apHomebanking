@@ -24,13 +24,13 @@ import static com.ap.homebanking_ap.utils.CardUtils.getRandomNumberCvv;
 @RequestMapping ("/api")
 public class CardController {
     @Autowired
-    private CardRepository cardRepository;
+    private CardService cardService;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @RequestMapping("/cards")
     public List<CardDTO> getCards() {
-        return cardRepository.findAll().stream().map(CardDTO::new).collect(Collectors.toList());
+        return cardService.getCards();
     }
 
     @RequestMapping("/cards/{id}")
@@ -40,13 +40,13 @@ public class CardController {
     @PostMapping("/clients/current/cards")
     public ResponseEntity<Object> createdCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor, Authentication authentication) {
 
-        Client clientAuth = clientRepository.findByEmail(authentication.getName());
+        Client clientAuth = clientService.getCurrentClient(authentication.getName());
 
-        List<Card> cardFiltered = clientAuth.getCards().stream()
-                .filter(card -> card.getType() == cardType).collect(Collectors.toList());
+        List<Card> cardFiltered = client.getCards().stream()
+                .filter(card -> card.getType() == cardType && card.getColor() == cardColor).collect(Collectors.toList());
 
-        if (cardFiltered.stream().count() == 3) {
-            return new ResponseEntity<>("Already max number of Card" + cardType, HttpStatus.FORBIDDEN);
+        if ((long) cardFiltered.size() == 1) {
+            return new ResponseEntity<>("Already this type of Card",HttpStatus.FORBIDDEN);
         }
 
         String numberCard;
@@ -56,12 +56,18 @@ public class CardController {
         do {
             numberCard = getRandomNumberCard();
         }
-        while (cardRepository.existsByNumber(numberCard));
+        while (cardService.existsCardByNumber(numberCard));
 
-        Card newCard = new Card(cardType,numberCard,cvv,LocalDate.now(),LocalDate.now().plusYears(5),clientAuth.getFirstName() + " " + clientAuth.getLastName(),
+        /*Card newCard = new Card(cardType,numberCard,cvv,LocalDate.now(),LocalDate.now().plusYears(5),clientAuth.getFirstName() + " " + clientAuth.getLastName(),
                 cardColor);
         clientAuth.addCard(newCard);
-        cardRepository.save(newCard);
+        cardRepository.save(newCard);*/
+
+        Card newCard = new Card(client.getFirstName() + " "+ client.getLastName(),
+                cardType, cardColor, numberCard,cvv, LocalDate.now(),LocalDate.now().plusYears(5));
+        client.addCard(newCard);
+        cardService.createdCard(newCard);
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

@@ -23,37 +23,48 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class ClientController {
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @RequestMapping("/clients")
     private List<ClientDTO> getClients(){
+
+        return clientService.getClients();
+        /*
         return clientRepository.findAll().stream().map(client -> new ClientDTO(client)).collect(Collectors.toList());
+        */
     }
-    @RequestMapping("/clients/{id}")
+
+    @GetMapping("/clients/{id}")
+    public clientDTO getClient (@PathVariable Long id){
+
+        return new ClientDTO(clientService.getClientById(id));
+            /*
     private ClientDTO getId(@PathVariable Long id){
         return new ClientDTO(clientRepository.findById(id).orElse(null));
+    */
     }
 
     @RequestMapping(value = "/clients/current", method = RequestMethod.GET)
     public ClientDTO getCurrent (Authentication authentication){
-        return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
+        return new ClientDTO(clientService.getCurrentClient(authentication.getName()));
     }
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Object> register(
-            @RequestParam String firstName, @RequestParam String lastName, @RequestParam String email, @RequestParam String password){
+            @RequestParam String firstName, @RequestParam String lastName,
+            @RequestParam String email, @RequestParam String password){
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()){
             return new ResponseEntity<>("Missing Data", HttpStatus.FORBIDDEN);
         }
 
-        if (clientRepository.findByEmail(email) != null){
+        if (clientService.getCurrentClient(email) != null){
             return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
         }
-        Account account = null;
+        /* Account account = null;
         do {
             String number = "VIN" + AccountUtils.getRandomNumberAccount(100000000,1000000);
             account = new Account(number,LocalDate.now(),0.0);
@@ -62,10 +73,13 @@ public class ClientController {
 
         String numberCard = CardUtils.getRandomNumberCard();
 
-        Integer cvv = CardUtils.getRandomNumberCvv(0,999);
+        Integer cvv = CardUtils.getRandomNumberCvv(0,999);*/
 
-        Client clientRegistered = new Client(firstName, lastName, email, passwordEncoder.encode(password));
-        clientRegistered.addAccount(account);
+        //Client clientRegistered = new Client(firstName, lastName, email, passwordEncoder.encode(password));
+
+        //clientRegistered.addAccount(account);
+
+        clientService.saveClient(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
