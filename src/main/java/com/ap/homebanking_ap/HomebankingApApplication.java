@@ -44,7 +44,7 @@ public class HomebankingApApplication {
 
 			Account account2 = new Account("VIN002",LocalDate.now().plusDays(1),7500.0);
 
-			Account account3 = new Account("VIN003", LocalDate.now(), 8600.0 );
+			Account account3 = new Account("VIN003",LocalDate.now(), 8600.0 );
 
 			Transaction transaction1 = new Transaction(TransactionType.CREDIT,500.0,"Credit rent", LocalDateTime.now());
 			Transaction transaction2 = new Transaction(TransactionType.DEBIT,-200.0,"Debit MacDonall's",LocalDateTime.now());
