@@ -5,6 +5,8 @@ import com.ap.homebanking_ap.models.Account;
 import com.ap.homebanking_ap.models.Client;
 import com.ap.homebanking_ap.repositories.AccountRepository;
 import com.ap.homebanking_ap.repositories.ClientRepository;
+import com.ap.homebanking_ap.services.AccountService;
+import com.ap.homebanking_ap.services.ClientService;
 import com.ap.homebanking_ap.utils.AccountUtils;
 import com.ap.homebanking_ap.utils.CardUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,7 +42,7 @@ public class ClientController {
     }
 
     @GetMapping("/clients/{id}")
-    public clientDTO getClient (@PathVariable Long id){
+    public ClientDTO getClient (@PathVariable Long id){
 
         return new ClientDTO(clientService.getClientById(id));
             /*

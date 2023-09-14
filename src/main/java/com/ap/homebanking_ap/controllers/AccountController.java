@@ -6,6 +6,8 @@ import com.ap.homebanking_ap.models.Account;
 import com.ap.homebanking_ap.models.Client;
 import com.ap.homebanking_ap.repositories.AccountRepository;
 import com.ap.homebanking_ap.repositories.ClientRepository;
+import com.ap.homebanking_ap.services.AccountService;
+import com.ap.homebanking_ap.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,7 +33,7 @@ public class AccountController {
     private ClientService clientService;
 
     @RequestMapping("/accounts")
-    public Set<AccountDTO>getAccounts(){
+    public List<AccountDTO>getAccounts(){
         return accountService.getAccounts();
     }
 
@@ -39,7 +42,7 @@ public class AccountController {
         return new AccountDTO(accountService.getAccountById(id));
     }
     @RequestMapping("/clients/current/accounts")
-    public Set<AccountDTO> getCurrentAccount (Authentication authentication){
+    public List<AccountDTO> getCurrentAccount (Authentication authentication){
         return accountService.getCurrentAccount(authentication);
     }
 
@@ -47,7 +50,7 @@ public class AccountController {
 
     public ResponseEntity<Object> createdAccount (Authentication authentication){
         //Client clientAuth = clientRepository.findByEmail(authentication.getName());
-        if (clientService.getCurrentClient(authentication.getName().getAccounts().stream().count() == 3){
+        if (clientService.getCurrentClient(authentication.getName()).getAccounts().stream().count()==3){
             System.out.println("Tiene 3 cuentas, alcanzo el maximo");
             return new ResponseEntity<>("Already max number accounts", HttpStatus.FORBIDDEN);
         }

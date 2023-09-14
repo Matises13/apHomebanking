@@ -4,15 +4,16 @@ import com.ap.homebanking_ap.dtos.LoanApplicationDTO;
 import com.ap.homebanking_ap.dtos.LoanDTO;
 import com.ap.homebanking_ap.models.*;
 import com.ap.homebanking_ap.repositories.ClientLoanRepository;
+import com.ap.homebanking_ap.services.AccountService;
+import com.ap.homebanking_ap.services.ClientService;
+import com.ap.homebanking_ap.services.LoanService;
+import com.ap.homebanking_ap.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,7 +31,7 @@ public class LoanApplicationController {
     private TransactionService transactionService;
     @Autowired
     private ClientLoanRepository clientLoanRepository;
-
+    @GetMapping("/loans")
     public List<LoanDTO> getLoans(){
         return loanService.getLoans();
     }
@@ -50,7 +51,7 @@ public class LoanApplicationController {
 
         // Verificacion de datos correctos, no vacios, monto distinto de 0, cuotas distinta a 0.
 
-        if (loadId == null){
+        if (loanId == null){
             return new ResponseEntity<>("Missing data, loan is required", HttpStatus.FORBIDDEN);
         }
 
@@ -101,13 +102,13 @@ public class LoanApplicationController {
         Transaction transaction = new Transaction(TransactionType.CREDIT,amount,
                 "Loan approved" + toAccountNumber, LocalDateTime.now());
         accountDestination.setBalance(accountDestination.getBalance() + amount);
-        accountDestination.addTransaction(transactionLoan);
+        accountDestination.addTransaction(transaction);
 
         loan.addClientLoan(clientLoan);
         clientAuth.addClientLoan(clientLoan);
 
         clientLoanRepository.save(clientLoan);
-        transactionService.createdTransaction(transactionLoan);
+        transactionService.createdTransaction(transaction);
         accountService.createdAccount(accountDestination);
 
         return new ResponseEntity<>("Loan approved", HttpStatus.CREATED);

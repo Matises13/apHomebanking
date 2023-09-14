@@ -7,6 +7,8 @@ import com.ap.homebanking_ap.models.Client;
 import com.ap.homebanking_ap.models.CardColor;
 import com.ap.homebanking_ap.repositories.CardRepository;
 import com.ap.homebanking_ap.repositories.ClientRepository;
+import com.ap.homebanking_ap.services.CardService;
+import com.ap.homebanking_ap.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,16 +35,16 @@ public class CardController {
         return cardService.getCards();
     }
 
-    @RequestMapping("/cards/{id}")
-    public CardDTO getCard(@PathVariable Long id) {
-        return new CardDTO(cardRepository.findById(id).orElse(null));
-    }
+//    @RequestMapping("/cards/{id}")
+//    public CardDTO getCard(@PathVariable Long id) {
+//        return new CardDTO(cardService.findById(id).orElse(null));}
+
     @PostMapping("/clients/current/cards")
     public ResponseEntity<Object> createdCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor, Authentication authentication) {
 
         Client clientAuth = clientService.getCurrentClient(authentication.getName());
 
-        List<Card> cardFiltered = client.getCards().stream()
+        List<Card> cardFiltered = clientAuth.getCards().stream()
                 .filter(card -> card.getType() == cardType && card.getColor() == cardColor).collect(Collectors.toList());
 
         if ((long) cardFiltered.size() == 1) {
@@ -56,16 +58,16 @@ public class CardController {
         do {
             numberCard = getRandomNumberCard();
         }
-        while (cardService.existsCardByNumber(numberCard));
+        while (cardService.exitsCardByNumber(numberCard));
 
         /*Card newCard = new Card(cardType,numberCard,cvv,LocalDate.now(),LocalDate.now().plusYears(5),clientAuth.getFirstName() + " " + clientAuth.getLastName(),
                 cardColor);
         clientAuth.addCard(newCard);
         cardRepository.save(newCard);*/
 
-        Card newCard = new Card(client.getFirstName() + " "+ client.getLastName(),
-                cardType, cardColor, numberCard,cvv, LocalDate.now(),LocalDate.now().plusYears(5));
-        client.addCard(newCard);
+        Card newCard = new Card(cardType,clientAuth.getFirstName() + " "+ clientAuth.getLastName(),
+                cvv, LocalDate.now().plusYears(5), LocalDate.now(),numberCard,cardColor);
+        clientAuth.addCard(newCard);
         cardService.createdCard(newCard);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
