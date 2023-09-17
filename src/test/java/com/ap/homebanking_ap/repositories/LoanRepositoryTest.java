@@ -1,6 +1,6 @@
 package com.ap.homebanking_ap.repositories;
 
-import com.ap.homebanking_ap.models.Account;
+import com.ap.homebanking_ap.models.Loan;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -8,24 +8,26 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+
 @DataJpaTest
 @AutoConfigureTestDatabase( replace = AutoConfigureTestDatabase.Replace.NONE)
-public class AccountRepositoryTest {
+class LoanRepositoryTest {
+
     @Autowired
-    AccountRepository accountRepository;
+    LoanRepository loanRepository;
 
     @Test
-    void existAccount () {
-        List<Account> accounts = accountRepository.findAll();
-        assertThat(accounts, is(not(empty())));
+    void existLoan(){
+        List<Loan> loans = loanRepository.findAll();
+        assertThat(loans, is(not(empty())));
     }
 
     @Test
-    void numberNotNull () {
-        List<Account> accounts = accountRepository.findAll();
-        assertThat(accounts,hasItem(hasProperty("number", notNullValue())));
+    void existMaxAmountThan(){
+        List<Loan> loans = loanRepository.findAll();
+        assertThat(loans, hasItem(hasProperty("maxAmount",lessThan(700000.0)))); //El monto max es de 600.000
     }
 }

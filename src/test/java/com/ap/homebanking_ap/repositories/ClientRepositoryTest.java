@@ -1,6 +1,6 @@
 package com.ap.homebanking_ap.repositories;
 
-import com.ap.homebanking_ap.models.Account;
+import com.ap.homebanking_ap.models.Client;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -12,20 +12,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
-@AutoConfigureTestDatabase( replace = AutoConfigureTestDatabase.Replace.NONE)
-public class AccountRepositoryTest {
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class ClientRepositoryTest {
     @Autowired
-    AccountRepository accountRepository;
-
+    ClientRepository clientRepository;
     @Test
-    void existAccount () {
-        List<Account> accounts = accountRepository.findAll();
-        assertThat(accounts, is(not(empty())));
+    public void emailNotNull(){
+        List<Client> clients = clientRepository.findAll();
+        assertThat(clients, hasItem(hasProperty("email", notNullValue())));
     }
-
     @Test
-    void numberNotNull () {
-        List<Account> accounts = accountRepository.findAll();
-        assertThat(accounts,hasItem(hasProperty("number", notNullValue())));
+    public void exitsClients (){
+        List <Client> clients = clientRepository.findAll();
+        assertThat(clients,is(not(empty())));
     }
 }
